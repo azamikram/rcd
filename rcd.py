@@ -128,7 +128,6 @@ if __name__ == '__main__':
     path = args.path
     k = args.k
     local = args.local
-    print(local)
     (normal_df, anomalous_df) = u.load_datasets(path + 'normal.csv',
                                                 path + 'anomalous.csv')
 

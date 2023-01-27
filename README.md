@@ -1,4 +1,5 @@
 ## Setup
+The following insutrctions assume that you are running Ubuntu-20.04.
 #### Install python env
 ```bash
 sudo apt update
@@ -31,18 +32,18 @@ Some of these changes expose some internal information for reporting results (fo
 
 Assuming the rcd repository was cloned at home, execute the following;
 ```bash
-ln -fs ~/rcd/python-simulation/pyAgrum/lib/image.py ~/env/lib/python3.8/site-packages/pyAgrum/lib/
-ln -fs ~/rcd/python-simulation/causallearn/search/ConstraintBased/FCI.py ~/env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
-ln -fs ~/rcd/python-simulation/causallearn/utils/Fas.py ~/env/lib/python3.8/site-packages/causallearn/utils/
-ln -fs ~/rcd/python-simulation/causallearn/utils/PCUtils/SkeletonDiscovery.py ~/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
-ln -fs ~/rcd/python-simulation/causallearn/graph/GraphClass.py ~/env/lib/python3.8/site-packages/causallearn/graph/
+ln -fs ~/rcd/pyAgrum/lib/image.py ~/env/lib/python3.8/site-packages/pyAgrum/lib/
+ln -fs ~/rcd/causallearn/search/ConstraintBased/FCI.py ~/env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
+ln -fs ~/rcd/causallearn/utils/Fas.py ~/env/lib/python3.8/site-packages/causallearn/utils/
+ln -fs ~/rcd/causallearn/utils/PCUtils/SkeletonDiscovery.py ~/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
+ln -fs ~/rcd/causallearn/graph/GraphClass.py ~/env/lib/python3.8/site-packages/causallearn/graph/
 ```
 
 ## Using RCD
 
 #### Generate Synthetic Data
 ```sh
-./gen_data.sh
+./gen_data.py
 ```
 
 #### Executing RCD with Synthetic Data
