@@ -1,0 +1,17 @@
+wheel==0.37.1
+igraph==0.9.9
+graphviz==0.19.1
+cairosvg==2.5.2
+matplotlib==3.3.4
+tk==0.1.0
+networkx==2.5.1
+numpy==1.19.5
+pandas==1.1.5
+pydot==1.4.2
+python_igraph==0.9.9
+scikit_learn==0.24.2
+scipy==1.5.4
+tqdm==4.63.0
+causal-learn==0.1.2.3
+pyagrum==0.21.0
+pydotplus==2.0.2

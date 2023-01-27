@@ -21,8 +21,8 @@ NODES = 10
 MIN_DEGREE = 1
 MAX_DEGREE = 3
 ANOMALOUS_NODES = 1
-NORMAL_SAMPLES = 1000
-ANOMALOUS_SAMPLES = 100
+NORMAL_SAMPLES = 1_000
+ANOMALOUS_SAMPLES = 1_000
 STATES = 6
 
 SRC_DIR_TEMPLATE = 'data/s-{SEED}/n-{NODES}-d-{DEGREE}-an-{ANOMALOUS_NODES}-nor-s-{NORMAL_SAMPLES}-an-s-{ANOMALOUS_SAMPLES}/'
@@ -52,7 +52,7 @@ def generate_random_dag(n, max_degree):
 
     if not nx.is_directed_acyclic_graph(G):
         print(f"Warning: Created DAG is not acyclic!")
-    
+
     return G.edges()
 
 def get_random_dag(n, max_degree=3, states=STATES):
@@ -114,7 +114,7 @@ def generate_data(seed, nodes, max_degree, normal_samples, anomalous_samples, an
         print(f"Data is saved at {src_dir}")
 
     # Choose a front-end service.
-    # Only used for automap
+    # Only used for some baselines
     fe_service = an_nodes[0]
     while True:
         succ = [u.get_node_name(n) for n in bn.children(fe_service)]
