@@ -1,10 +1,7 @@
 name: Test RCD
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  push
 
 permissions:
   contents: read
