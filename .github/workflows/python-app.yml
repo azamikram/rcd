@@ -1,0 +1,46 @@
+name: Test RCD
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.8"
+    - name: Install system deps
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential \
+                 libxml2 \
+                 libxml2-dev \
+                 zlib1g-dev \
+                 python3-tk \
+                 graphviz
+    - name: Install python deps
+      run: |
+        python3.8 -m venv env
+        source env/bin/activate
+        pip install -U pip
+        pip install -r requirements.txt
+    - name: link
+      run: |
+        ln -fs pyAgrum/lib/image.py env/lib/python3.8/site-packages/pyAgrum/lib/
+        ln -fs causallearn/search/ConstraintBased/FCI.py env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
+        ln -fs causallearn/utils/Fas.py env/lib/python3.8/site-packages/causallearn/utils/
+        ln -fs causallearn/utils/PCUtils/SkeletonDiscovery.py env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
+        ln -fs causallearn/graph/GraphClass.py env/lib/python3.8/site-packages/causallearn/graph/
+        
+        
