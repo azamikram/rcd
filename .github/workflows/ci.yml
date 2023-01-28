@@ -39,15 +39,10 @@ jobs:
         ln -fs $PWD/causallearn/utils/Fas.py $PWD/env/lib/python3.8/site-packages/causallearn/utils/
         ln -fs $PWD/causallearn/utils/PCUtils/SkeletonDiscovery.py $PWD/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
         ln -fs $PWD/causallearn/graph/GraphClass.py $PWD/env/lib/python3.8/site-packages/causallearn/graph/
-    - name: gen data
+    - name: gen data, and run rcd
       run: |
         source env/bin/activate
         python gen_data.py
-    - name: run rcd with k=3
-      run: python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 3
-    - name: run rcd with k=2
-      run: python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 2
-    - name: run rcd with k=1
-      run: python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 1
-        
-        
+        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 3
+        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 2
+        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 1
