@@ -34,11 +34,11 @@ jobs:
         pip install -r requirements.txt
     - name: link
       run: |
-        ln -fs $pwd/pyAgrum/lib/image.py $pwd/env/lib/python3.8/site-packages/pyAgrum/lib/
-        ln -fs $pwd/causallearn/search/ConstraintBased/FCI.py $pwd/env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
-        ln -fs $pwd/causallearn/utils/Fas.py $pwd/env/lib/python3.8/site-packages/causallearn/utils/
-        ln -fs $pwd/causallearn/utils/PCUtils/SkeletonDiscovery.py $pwd/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
-        ln -fs $pwd/causallearn/graph/GraphClass.py $pwd/env/lib/python3.8/site-packages/causallearn/graph/
+        ln -fs $PWD/pyAgrum/lib/image.py $PWD/env/lib/python3.8/site-packages/pyAgrum/lib/
+        ln -fs $PWD/causallearn/search/ConstraintBased/FCI.py $PWD/env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
+        ln -fs $PWD/causallearn/utils/Fas.py $PWD/env/lib/python3.8/site-packages/causallearn/utils/
+        ln -fs $PWD/causallearn/utils/PCUtils/SkeletonDiscovery.py $PWD/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
+        ln -fs $PWD/causallearn/graph/GraphClass.py $PWD/env/lib/python3.8/site-packages/causallearn/graph/
     - name: gen data
       run: |
         source env/bin/activate
