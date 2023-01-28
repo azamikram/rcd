@@ -1,3 +1,5 @@
+[![Test RCD](https://github.com/phamquiluan/rcd/actions/workflows/ci.yml/badge.svg)](https://github.com/phamquiluan/rcd/actions/workflows/ci.yml)
+
 ## Setup
 The following insutrctions assume that you are running Ubuntu-20.04.
 #### Install python env
