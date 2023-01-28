@@ -43,6 +43,6 @@ jobs:
       run: |
         source env/bin/activate
         python gen_data.py
-        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 3
-        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 2
-        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000 --local --k 1
+        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000/ --local --k 3
+        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000/ --local --k 2
+        python rcd.py --path data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000/ --local --k 1
