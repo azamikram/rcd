@@ -32,11 +32,11 @@ Some of these changes expose some internal information for reporting results (fo
 
 Assuming the rcd repository was cloned at home, execute the following;
 ```bash
-ln -fs ~/rcd/pyAgrum/lib/image.py ~/env/lib/python3.8/site-packages/pyAgrum/lib/
-ln -fs ~/rcd/causallearn/search/ConstraintBased/FCI.py ~/env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
-ln -fs ~/rcd/causallearn/utils/Fas.py ~/env/lib/python3.8/site-packages/causallearn/utils/
-ln -fs ~/rcd/causallearn/utils/PCUtils/SkeletonDiscovery.py ~/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
-ln -fs ~/rcd/causallearn/graph/GraphClass.py ~/env/lib/python3.8/site-packages/causallearn/graph/
+ln -fs /workspaces/rcd/pyAgrum/lib/image.py ~/env/lib/python3.8/site-packages/pyAgrum/lib/
+ln -fs /workspaces/rcd/causallearn/search/ConstraintBased/FCI.py ~/env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
+ln -fs /workspaces/rcd/causallearn/utils/Fas.py ~/env/lib/python3.8/site-packages/causallearn/utils/
+ln -fs /workspaces/rcd/causallearn/utils/PCUtils/SkeletonDiscovery.py ~/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
+ln -fs /workspaces/rcd/causallearn/graph/GraphClass.py ~/env/lib/python3.8/site-packages/causallearn/graph/
 ```
 
 ## Using RCD
@@ -48,7 +48,7 @@ ln -fs ~/rcd/causallearn/graph/GraphClass.py ~/env/lib/python3.8/site-packages/c
 
 #### Executing RCD with Synthetic Data
 ```sh
-./rcd.py --path [PATH_TO_DATA] --local --k 3
+python rcd.py --path [PATH_TO_DATA] --local --k 3
 ```
 
 `--local` options enables the localized RCD while `--k` estimates the top-`k` root causes.
