@@ -21,6 +21,7 @@ K = None
 LOCAL_ALPHA = 0.01
 DEFAULT_GAMMA = 5
 
+# SRC_DIR = 'sock-shop-data/carts-mem/1/'
 SRC_DIR = 'data/s-2/n-10-d-3-an-1-nor-s-1000-an-s-1000/'
 
 # Split the dataset into multiple subsets
@@ -130,6 +131,9 @@ if __name__ == '__main__':
     local = args.local
     (normal_df, anomalous_df) = u.load_datasets(path + 'normal.csv',
                                                 path + 'anomalous.csv')
+
+    # Enable the following line for sock-shop or real outage dataset
+    # normal_df, anomalous_df = u.preprocess(normal_df, anomalous_df, 90)
 
     result = top_k_rc(normal_df, anomalous_df, k=k, bins=BINS, localized=local)
     print(f"Top {k} took {round(result['time'], 4)} and potential root causes are {result['root_cause']}")
