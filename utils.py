@@ -30,6 +30,7 @@ def get_node_name(node):
 def drop_constant(df):
     return df.loc[:, (df != df.iloc[0]).any()]
 
+# Only used for sock-shop and real outage datasets
 def preprocess(n_df, a_df, per):
     _process = lambda df: _select_lat(_scale_down_mem(_rm_time(df)), per)
 
@@ -41,7 +42,6 @@ def preprocess(n_df, a_df, per):
 
     n_df, a_df = _match_columns(n_df, a_df)
 
-    # Enable for sock-shop
     df = _select_useful_cols(add_fnode(n_df, a_df))
     n_df = df[df[F_NODE] == '0'].drop(columns=[F_NODE])
     a_df = df[df[F_NODE] == '1'].drop(columns=[F_NODE])
@@ -99,6 +99,8 @@ def pc_with_fnode(normal_df, anomalous_df, alpha, bins=None,
 def top_k_rc(normal_df, anomalous_df, bins=None, mi=[],
              localized=False, start_alpha=None, min_nodes=-1,
              verbose=VERBOSE):
+    if 0 in [len(normal_df.columns), len(anomalous_df.columns)]:
+        return ([], None, [], 0)
     data = _preprocess_for_fnode(normal_df, anomalous_df, bins)
 
     if min_nodes == -1:
@@ -162,8 +164,6 @@ def _preprocess_for_fnode(normal_df, anomalous_df, bins):
     return _discretize(df, bins) if bins is not None else df
 
 def _select_useful_cols(df):
-    # return df
-
     i = df.loc[:, df.columns != F_NODE].std() > 1
     cols = i[i].index.tolist()
     cols.append(F_NODE)
@@ -172,9 +172,9 @@ def _select_useful_cols(df):
     elif len(cols) == len(df.columns):
         return df
 
-    # print(f"Out of {df.columns.tolist()}, selecting only {cols} columns")
     return df[cols]
 
+# Only select the metrics that are in both datasets
 def _match_columns(n_df, a_df):
     cols = _list_intersection(n_df.columns, a_df.columns)
     return (n_df[cols], a_df[cols])
