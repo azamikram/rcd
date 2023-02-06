@@ -34,11 +34,11 @@ Some of these changes expose some internal information for reporting results (fo
 
 Assuming the rcd repository was cloned at home, execute the following;
 ```bash
-ln -fs /workspaces/rcd/pyAgrum/lib/image.py ~/env/lib/python3.8/site-packages/pyAgrum/lib/
-ln -fs /workspaces/rcd/causallearn/search/ConstraintBased/FCI.py ~/env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
-ln -fs /workspaces/rcd/causallearn/utils/Fas.py ~/env/lib/python3.8/site-packages/causallearn/utils/
-ln -fs /workspaces/rcd/causallearn/utils/PCUtils/SkeletonDiscovery.py ~/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
-ln -fs /workspaces/rcd/causallearn/graph/GraphClass.py ~/env/lib/python3.8/site-packages/causallearn/graph/
+ln -fs $PWD/pyAgrum/lib/image.py $PWD/env/lib/python3.8/site-packages/pyAgrum/lib/
+ln -fs $PWD/causallearn/search/ConstraintBased/FCI.py $PWD/env/lib/python3.8/site-packages/causallearn/search/ConstraintBased/
+ln -fs $PWD/causallearn/utils/Fas.py $PWD/env/lib/python3.8/site-packages/causallearn/utils/
+ln -fs $PWD/causallearn/utils/PCUtils/SkeletonDiscovery.py $PWD/env/lib/python3.8/site-packages/causallearn/utils/PCUtils/
+ln -fs $PWD/causallearn/graph/GraphClass.py $PWD/env/lib/python3.8/site-packages/causallearn/graph/
 ```
 
 ## Using RCD
