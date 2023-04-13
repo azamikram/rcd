@@ -3,13 +3,10 @@
 ## Setup
 The following instructions assume that you are running Ubuntu-22.04.
 
-#### Install python env
+#### Install dependencies
 ```bash
 sudo apt update
 sudo apt install -y build-essential \
-  python-dev \
-  python3-venv \
-  python3-pip \
   libxml2 \
   libxml2-dev \
   zlib1g-dev \
