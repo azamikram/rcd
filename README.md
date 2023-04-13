@@ -1,30 +1,30 @@
 [![Test RCD](https://github.com/phamquiluan/rcd/actions/workflows/ci.yml/badge.svg)](https://github.com/phamquiluan/rcd/actions/workflows/ci.yml)
 
 ## Setup
-The following insutrctions assume that you are running Ubuntu-20.04.
+The following instructions assume that you are running Ubuntu-22.04.
+
 #### Install python env
 ```bash
 sudo apt update
 sudo apt install -y build-essential \
-                 python-dev \
-                 python3-venv \
-                 python3-pip \
-                 libxml2 \
-                 libxml2-dev \
-                 zlib1g-dev \
-                 python3-tk \
-                 graphviz
-
-cd ~
-python3 -m venv env
-source env/bin/activate
-python3 -m pip install --upgrade pip
+  python-dev \
+  python3-venv \
+  python3-pip \
+  libxml2 \
+  libxml2-dev \
+  zlib1g-dev \
+  python3-tk \
+  graphviz
 ```
 
 #### Install dependencies
 ```bash
 git clone https://github.com/azamikram/rcd.git
 cd rcd
+
+python3 -m venv env
+source env/bin/activate
+python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
