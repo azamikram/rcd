@@ -15,8 +15,10 @@ def possible_parents(node_x, adjx, knowledge=None):
     possibleParents = []
 
     for node_z in adjx:
-        if (knowledge is None) or \
-                (not knowledge.is_forbidden(node_z, node_x) and not knowledge.is_required(node_x, node_z)):
+        if (knowledge is None) or (
+            not knowledge.is_forbidden(node_z, node_x)
+            and not knowledge.is_required(node_x, node_z)
+        ):
             possibleParents.append(node_z)
 
     return possibleParents
@@ -38,15 +40,31 @@ def freeDegree(nodes, adjacencies):
 def forbiddenEdge(node_x, node_y, knowledge):
     if knowledge is None:
         return False
-    elif knowledge.is_forbidden(node_x, node_y) and knowledge.is_forbidden(node_y, node_x):
+    elif knowledge.is_forbidden(node_x, node_y) and knowledge.is_forbidden(
+        node_y, node_x
+    ):
         print(
-            node_x.get_name() + " --- " + node_y.get_name() + " because it was forbidden by background background_knowledge.")
+            node_x.get_name()
+            + " --- "
+            + node_y.get_name()
+            + " because it was forbidden by background background_knowledge."
+        )
         return True
     return False
 
 
-def searchAtDepth0(data, nodes, adjacencies, sep_sets, independence_test_method=fisherz, alpha=0.05,
-                   verbose=False, knowledge=None, pbar=None, cache_variables_map=None):
+def searchAtDepth0(
+    data,
+    nodes,
+    adjacencies,
+    sep_sets,
+    independence_test_method=fisherz,
+    alpha=0.05,
+    verbose=False,
+    knowledge=None,
+    pbar=None,
+    cache_variables_map=None,
+):
     empty = []
     if cache_variables_map is None:
         data_hash_key = hash(str(data))
@@ -61,10 +79,13 @@ def searchAtDepth0(data, nodes, adjacencies, sep_sets, independence_test_method=
         cardinalities = cache_variables_map["cardinalities"]
 
     show_progress = not pbar is None
-    if show_progress: pbar.reset()
+    if show_progress:
+        pbar.reset()
     for i in range(len(nodes)):
-        if show_progress: pbar.update()
-        if show_progress: pbar.set_description(f'Depth=0, working on node {i}')
+        if show_progress:
+            pbar.update()
+        if show_progress:
+            pbar.set_description(f"Depth=0, working on node {i}")
         if verbose and (i + 1) % 100 == 0:
             print(nodes[i + 1].get_name())
 
@@ -73,28 +94,57 @@ def searchAtDepth0(data, nodes, adjacencies, sep_sets, independence_test_method=
             if ijS_key in citest_cache:
                 p_value = citest_cache[ijS_key]
             else:
-                p_value = independence_test_method(data, i, j, tuple(empty)) if cardinalities is None \
-                    else independence_test_method(data, i, j, tuple(empty), cardinalities)
+                p_value = (
+                    independence_test_method(data, i, j, tuple(empty))
+                    if cardinalities is None
+                    else independence_test_method(
+                        data, i, j, tuple(empty), cardinalities
+                    )
+                )
                 citest_cache[ijS_key] = p_value
             independent = p_value > alpha
 
             if verbose:
-                    print(nodes[i].get_name() + f" {'ind' if independent else 'dep'} " + nodes[j].get_name() + " | (), p-value = " + str(p_value))
+                print(
+                    nodes[i].get_name()
+                    + f" {'ind' if independent else 'dep'} "
+                    + nodes[j].get_name()
+                    + " | (), p-value = "
+                    + str(p_value)
+                )
 
-            no_edge_required = True if knowledge is None else \
-                ((not knowledge.is_required(nodes[i], nodes[j])) or knowledge.is_required(nodes[j], nodes[i]))
+            no_edge_required = (
+                True
+                if knowledge is None
+                else (
+                    (not knowledge.is_required(nodes[i], nodes[j]))
+                    or knowledge.is_required(nodes[j], nodes[i])
+                )
+            )
             if independent and no_edge_required:
                 sep_sets[(i, j)] = set()
 
             elif not forbiddenEdge(nodes[i], nodes[j], knowledge):
                 adjacencies[nodes[i]].add(nodes[j])
                 adjacencies[nodes[j]].add(nodes[i])
-    if show_progress: pbar.refresh()
+    if show_progress:
+        pbar.refresh()
     return freeDegree(nodes, adjacencies) > 0
 
 
-def searchAtDepth(data, depth, nodes, adjacencies, sep_sets, independence_test_method=fisherz, alpha=0.05,
-                  verbose=False, knowledge=None, pbar=None, cache_variables_map=None):
+def searchAtDepth(
+    data,
+    depth,
+    nodes,
+    adjacencies,
+    sep_sets,
+    independence_test_method=fisherz,
+    alpha=0.05,
+    verbose=False,
+    knowledge=None,
+    pbar=None,
+    cache_variables_map=None,
+):
     def edge(adjx, i, adjacencies_completed_edge):
         for j in range(len(adjx)):
             node_y = adjx[j]
@@ -112,18 +162,28 @@ def searchAtDepth(data, depth, nodes, adjacencies, sep_sets, independence_test_m
 
                     Y = nodes.index(adjx[j])
                     X, Y = (i, Y) if (i < Y) else (Y, i)
-                    XYS_key = (X, Y, frozenset(cond_set), data_hash_key, ci_test_hash_key)
+                    XYS_key = (
+                        X,
+                        Y,
+                        frozenset(cond_set),
+                        data_hash_key,
+                        ci_test_hash_key,
+                    )
                     if XYS_key in citest_cache:
                         p_value = citest_cache[XYS_key]
                     else:
-                        p_value = independence_test_method(data, X, Y, tuple(cond_set)) if cardinalities is None \
-                            else independence_test_method(data, X, Y, tuple(cond_set), cardinalities)
+                        p_value = (
+                            independence_test_method(data, X, Y, tuple(cond_set))
+                            if cardinalities is None
+                            else independence_test_method(
+                                data, X, Y, tuple(cond_set), cardinalities
+                            )
+                        )
 
                         citest_cache[XYS_key] = p_value
 
                     independent = p_value > alpha
                     if independent:
-
                         if verbose:
                             message = f"{nodes[i].get_name()} {'ind' if independent else 'dep'} {adjx[j].get_name()} | ("
                             for cond_set_index in range(len(cond_set)):
@@ -133,10 +193,15 @@ def searchAtDepth(data, depth, nodes, adjacencies, sep_sets, independence_test_m
                             message += "), p-value = " + str(p_value)
                             print(message)
 
-                    no_edge_required = True if knowledge is None else \
-                        ((not knowledge.is_required(nodes[i], adjx[j])) or knowledge.is_required(adjx[j], nodes[i]))
+                    no_edge_required = (
+                        True
+                        if knowledge is None
+                        else (
+                            (not knowledge.is_required(nodes[i], adjx[j]))
+                            or knowledge.is_required(adjx[j], nodes[i])
+                        )
+                    )
                     if independent and no_edge_required:
-
                         if adjacencies[nodes[i]].__contains__(adjx[j]):
                             adjacencies[nodes[i]].remove(adjx[j])
                         if adjacencies[adjx[j]].__contains__(nodes[i]):
@@ -172,11 +237,14 @@ def searchAtDepth(data, depth, nodes, adjacencies, sep_sets, independence_test_m
     adjacencies_completed = deepcopy(adjacencies)
 
     show_progress = not pbar is None
-    if show_progress: pbar.reset()
+    if show_progress:
+        pbar.reset()
 
     for i in range(len(nodes)):
-        if show_progress: pbar.update()
-        if show_progress: pbar.set_description(f'Depth={depth}, working on node {i}')
+        if show_progress:
+            pbar.update()
+        if show_progress:
+            pbar.set_description(f"Depth={depth}, working on node {i}")
         if verbose:
             count += 1
             if count % 10 == 0:
@@ -187,12 +255,24 @@ def searchAtDepth(data, depth, nodes, adjacencies, sep_sets, independence_test_m
             finish_flag = edge(adjx, i, adjacencies_completed)
 
             adjx = list(adjacencies[nodes[i]])
-    if show_progress: pbar.refresh()
+    if show_progress:
+        pbar.refresh()
     return freeDegree(nodes, adjacencies) > depth
 
 
-def searchAtDepth_not_stable(data, depth, nodes, adjacencies, sep_sets, independence_test_method=fisherz, alpha=0.05,
-                             verbose=False, knowledge=None, pbar=None, cache_variables_map=None):
+def searchAtDepth_not_stable(
+    data,
+    depth,
+    nodes,
+    adjacencies,
+    sep_sets,
+    independence_test_method=fisherz,
+    alpha=0.05,
+    verbose=False,
+    knowledge=None,
+    pbar=None,
+    cache_variables_map=None,
+):
     def edge(adjx, i, adjacencies_completed_edge):
         for j in range(len(adjx)):
             node_y = adjx[j]
@@ -210,21 +290,37 @@ def searchAtDepth_not_stable(data, depth, nodes, adjacencies, sep_sets, independ
 
                     Y = nodes.index(adjx[j])
                     X, Y = (i, Y) if (i < Y) else (Y, i)
-                    XYS_key = (X, Y, frozenset(cond_set), data_hash_key, ci_test_hash_key)
+                    XYS_key = (
+                        X,
+                        Y,
+                        frozenset(cond_set),
+                        data_hash_key,
+                        ci_test_hash_key,
+                    )
                     if XYS_key in citest_cache:
                         p_value = citest_cache[XYS_key]
                     else:
-                        p_value = independence_test_method(data, X, Y, tuple(cond_set)) if cardinalities is None \
-                            else independence_test_method(data, X, Y, tuple(cond_set), cardinalities)
+                        p_value = (
+                            independence_test_method(data, X, Y, tuple(cond_set))
+                            if cardinalities is None
+                            else independence_test_method(
+                                data, X, Y, tuple(cond_set), cardinalities
+                            )
+                        )
 
                         citest_cache[XYS_key] = p_value
 
                     independent = p_value > alpha
 
-                    no_edge_required = True if knowledge is None else \
-                        ((not knowledge.is_required(nodes[i], adjx[j])) or knowledge.is_required(adjx[j], nodes[i]))
+                    no_edge_required = (
+                        True
+                        if knowledge is None
+                        else (
+                            (not knowledge.is_required(nodes[i], adjx[j]))
+                            or knowledge.is_required(adjx[j], nodes[i])
+                        )
+                    )
                     if independent and no_edge_required:
-
                         if adjacencies[nodes[i]].__contains__(adjx[j]):
                             adjacencies[nodes[i]].remove(adjx[j])
                         if adjacencies[adjx[j]].__contains__(nodes[i]):
@@ -239,8 +335,13 @@ def searchAtDepth_not_stable(data, depth, nodes, adjacencies, sep_sets, independ
                                 sep_sets[(i, nodes.index(adjx[j]))] = set(cond_set)
 
                         if verbose:
-                            message = "Independence accepted: " + nodes[i].get_name() + " _||_ " + adjx[
-                                j].get_name() + " | "
+                            message = (
+                                "Independence accepted: "
+                                + nodes[i].get_name()
+                                + " _||_ "
+                                + adjx[j].get_name()
+                                + " | "
+                            )
                             for cond_set_index in range(len(cond_set)):
                                 message += nodes[cond_set[cond_set_index]].get_name()
                                 if cond_set_index != len(cond_set) - 1:
@@ -265,11 +366,14 @@ def searchAtDepth_not_stable(data, depth, nodes, adjacencies, sep_sets, independ
     count = 0
 
     show_progress = not pbar is None
-    if show_progress: pbar.reset()
+    if show_progress:
+        pbar.reset()
 
     for i in range(len(nodes)):
-        if show_progress: pbar.update()
-        if show_progress: pbar.set_description(f'Depth={depth}, working on node {i}')
+        if show_progress:
+            pbar.update()
+        if show_progress:
+            pbar.set_description(f"Depth={depth}, working on node {i}")
         if verbose:
             count += 1
             if count % 10 == 0:
@@ -280,13 +384,24 @@ def searchAtDepth_not_stable(data, depth, nodes, adjacencies, sep_sets, independ
             finish_flag = edge(adjx, i, adjacencies)
 
             adjx = list(adjacencies[nodes[i]])
-    if show_progress: pbar.refresh()
+    if show_progress:
+        pbar.refresh()
     return freeDegree(nodes, adjacencies) > depth
 
 
-def fas(data, nodes, independence_test_method=fisherz, alpha=0.05, knowledge=None, depth=-1,
-        verbose=False, stable=True, show_progress=True, cache_variables_map=None):
-    '''
+def fas(
+    data,
+    nodes,
+    independence_test_method=fisherz,
+    alpha=0.05,
+    knowledge=None,
+    depth=-1,
+    verbose=False,
+    stable=True,
+    show_progress=True,
+    cache_variables_map=None,
+):
+    """
     Implements the "fast adjacency search" used in several causal algorithm in this file. In the fast adjacency
     search, at a given stage of the search, an edge X*-*Y is removed from the graph if X _||_ Y | S, where S is a subset
     of size d either of adj(X) or of adj(Y), where d is the depth of the search. The fast adjacency search performs this
@@ -319,7 +434,7 @@ def fas(data, nodes, independence_test_method=fisherz, alpha=0.05, knowledge=Non
     -------
     graph: Causal graph skeleton, where graph.graph[i,j] = graph.graph[j,i] = -1 indicates i --- j.
     sep_sets: separated sets of graph
-    '''
+    """
 
     # --------check parameter -----------
     if (depth is not None) and type(depth) != int:
@@ -346,12 +461,14 @@ def fas(data, nodes, independence_test_method=fisherz, alpha=0.05, knowledge=Non
             cardinalities = np.max(data, axis=0) + 1
         else:
             cardinalities = None
-        cache_variables_map = {"data_hash_key": hash(str(data)),
-                               "ci_test_hash_key": hash(independence_test_method),
-                               "cardinalities": cardinalities}
+        cache_variables_map = {
+            "data_hash_key": hash(str(data)),
+            "ci_test_hash_key": hash(independence_test_method),
+            "cardinalities": cardinalities,
+        }
     # ------- end initial variable ---------
     if verbose:
-        print('Starting Fast Adjacency Search.')
+        print("Starting Fast Adjacency Search.")
 
     # use tqdm to show progress bar
     pbar = tqdm(total=len(nodes)) if show_progress else None
@@ -359,18 +476,51 @@ def fas(data, nodes, independence_test_method=fisherz, alpha=0.05, knowledge=Non
         more = False
 
         if d == 0:
-            more = searchAtDepth0(data, nodes, adjacencies, sep_sets, independence_test_method, alpha, verbose,
-                                  knowledge, pbar=pbar, cache_variables_map=cache_variables_map)
+            more = searchAtDepth0(
+                data,
+                nodes,
+                adjacencies,
+                sep_sets,
+                independence_test_method,
+                alpha,
+                verbose,
+                knowledge,
+                pbar=pbar,
+                cache_variables_map=cache_variables_map,
+            )
         else:
             if stable:
-                more = searchAtDepth(data, d, nodes, adjacencies, sep_sets, independence_test_method, alpha, verbose,
-                                     knowledge, pbar=pbar, cache_variables_map=cache_variables_map)
+                more = searchAtDepth(
+                    data,
+                    d,
+                    nodes,
+                    adjacencies,
+                    sep_sets,
+                    independence_test_method,
+                    alpha,
+                    verbose,
+                    knowledge,
+                    pbar=pbar,
+                    cache_variables_map=cache_variables_map,
+                )
             else:
-                more = searchAtDepth_not_stable(data, d, nodes, adjacencies, sep_sets, independence_test_method, alpha,
-                                                verbose, knowledge, pbar=pbar, cache_variables_map=cache_variables_map)
+                more = searchAtDepth_not_stable(
+                    data,
+                    d,
+                    nodes,
+                    adjacencies,
+                    sep_sets,
+                    independence_test_method,
+                    alpha,
+                    verbose,
+                    knowledge,
+                    pbar=pbar,
+                    cache_variables_map=cache_variables_map,
+                )
         if not more:
             break
-    if show_progress: pbar.close()
+    if show_progress:
+        pbar.close()
 
     graph = GeneralGraph(nodes)
     for i in range(len(nodes)):
