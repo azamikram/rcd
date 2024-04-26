@@ -7,10 +7,11 @@ import numpy as np
 
 import utils as u
 
-VERBOSE = False
+VERBOSE = True
 
-BINS = 5
 K = None
+SEED = 420
+BINS = None
 
 # LOCAL_ALPHA has an effect on execution time. Too strict alpha will produce a sparse graph
 # so we might need to run phase-1 multiple times to get up to k elements. Too relaxed alpha
@@ -72,15 +73,17 @@ def run_multi_phase(normal_df, anomalous_df, gamma, localized, bins, verbose):
     prev = len(f_child_union)
 
     # Phase-1
+    ci_tests = 0
     while True:
         start = time.time()
-        f_child_union, mi, ci_tests = run_level(normal_df.loc[:, f_child_union],
-                                                anomalous_df.loc[:, f_child_union],
-                                                gamma, localized, bins, verbose)
+        f_child_union, mi, ci = run_level(normal_df.loc[:, f_child_union],
+                                          anomalous_df.loc[:, f_child_union],
+                                          gamma, localized, bins, verbose)
         if verbose:
             print(f"Level-{i}: variables {len(f_child_union)} | time {time.time() - start}")
         i += 1
         mi_union += mi
+        ci_tests += ci
         # Phase-1 with only one level
         # break
 
@@ -99,7 +102,6 @@ def run_multi_phase(normal_df, anomalous_df, gamma, localized, bins, verbose):
                                localized=localized,
                                verbose=verbose)
     ci_tests += ci
-
     return rc, ci_tests
 
 def rca_with_rcd(normal_df, anomalous_df, bins,
@@ -108,10 +110,11 @@ def rca_with_rcd(normal_df, anomalous_df, bins,
     rc, ci_tests = run_multi_phase(normal_df, anomalous_df, gamma, localized, bins, verbose)
     end = time.time()
 
-    return {'time': end - start, 'root_cause': rc, 'ci_tests': ci_tests}
+    return {'time': end - start, 'root_cause': rc, 'tests': ci_tests}
 
 def top_k_rc(normal_df, anomalous_df, k, bins,
-             gamma=DEFAULT_GAMMA, localized=False, verbose=VERBOSE):
+             gamma=DEFAULT_GAMMA, seed=SEED, localized=False, verbose=VERBOSE):
+    np.random.seed(seed)
     result = rca_with_rcd(normal_df, anomalous_df, bins, gamma, localized, verbose)
     return {**result, 'root_cause': result['root_cause'][:k]}
 
@@ -136,4 +139,4 @@ if __name__ == '__main__':
     # normal_df, anomalous_df = u.preprocess(normal_df, anomalous_df, 90)
 
     result = top_k_rc(normal_df, anomalous_df, k=k, bins=BINS, localized=local)
-    print(f"Top {k} took {round(result['time'], 4)} and potential root causes are {result['root_cause']}")
+    print(f"Top {k} took {round(result['time'], 4)} and potential root causes are {result['root_cause']} with {result['tests']} tests")
