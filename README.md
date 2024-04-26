@@ -55,3 +55,10 @@ ln -fs ~/rcd/causallearn/graph/GraphClass.py ~/env/lib/python3.8/site-packages/c
 ```
 
 `--local` options enables the localized RCD while `--k` estimates the top-`k` root causes.
+
+#### Running RCD with varying number of nodes
+```sh
+./compare.py
+
+./plot_exp.py exp_results/[TIMESTAMP]
+```
