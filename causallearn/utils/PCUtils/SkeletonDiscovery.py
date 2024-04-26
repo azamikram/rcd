@@ -173,7 +173,7 @@ def local_skeleton_discovery(data, local_node, alpha, indep_test, mi=[], labels=
             for S in combinations(Neigh_y_f, depth):
                 p = cg.ci_test(x, y, S)
                 if p > alpha:
-                    if verbose: print('%d ind %d | %s with p-value %f\n' % (x, y, S, p))
+                    if verbose: print(f'{cg.labels[x]} ind {cg.labels[y]} | {[cg.labels[s] for s in S]} with p-value {p}')
                     cg.remove_edge(x, y)
                     append_value(cg.sepset, x, y, S)
                     append_value(cg.sepset, y, x, S)
@@ -183,6 +183,6 @@ def local_skeleton_discovery(data, local_node, alpha, indep_test, mi=[], labels=
                     break
                 else:
                     append_value(cg.p_values, x, y, p)
-                    if verbose: print('%d dep %d | %s with p-value %f\n' % (x, y, S, p))
+                    if verbose: print(f'{cg.labels[x]} dep {cg.labels[y]} | {[cg.labels[s] for s in S]} with p-value {p}')
 
     return cg
